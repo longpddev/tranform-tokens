@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "bin": {
-    "transform-tokens": "dist/cli/index.js"
+    "tokens": "dist/src/cli.mjs"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
