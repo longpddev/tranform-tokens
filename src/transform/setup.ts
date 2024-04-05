@@ -93,10 +93,10 @@ StyleDictionary.registerFormat({
 
     let result = `import { teamsLightTheme } from '@fluentui/react-theme';\n\n`
 
-    result += `export const globalTokens = Object.assign(teamsLightTheme, ${JSON.stringify(Object.fromEntries(globalTokens.map(formatOptions)), undefined, 2)})\n\n`;
+    result += `export const globalTokens = Object.assign(${JSON.stringify(Object.fromEntries(globalTokens.map(formatOptions)), undefined, 2)}, teamsLightTheme)\n\n`;
 
     result += themesTokensCustomCollection.map(([name, tokens]) => {
-      return `export const ${name} = Object.assign(globalTokens, ${JSON.stringify(Object.fromEntries(tokens.map(formatOptions)), undefined, 2)});`
+      return `export const ${name} = Object.assign(${JSON.stringify(Object.fromEntries(tokens.map(formatOptions)), undefined, 2)}, globalTokens);`
     }).join('\n\n')
     
     return result

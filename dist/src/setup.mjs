@@ -73,8 +73,8 @@ StyleDictionary.registerFormat({
         }));
         const themesTokensCustomCollection = Array.from(themesTokens.entries()).map((([name, tokens]) => [ `${name}Tokens`, tokens ]));
         let result = `import { teamsLightTheme } from '@fluentui/react-theme';\n\n`;
-        result += `export const globalTokens = Object.assign(teamsLightTheme, ${JSON.stringify(Object.fromEntries(globalTokens.map(formatOptions)), undefined, 2)})\n\n`;
-        result += themesTokensCustomCollection.map((([name, tokens]) => `export const ${name} = Object.assign(globalTokens, ${JSON.stringify(Object.fromEntries(tokens.map(formatOptions)), undefined, 2)});`)).join("\n\n");
+        result += `export const globalTokens = Object.assign(${JSON.stringify(Object.fromEntries(globalTokens.map(formatOptions)), undefined, 2)}, teamsLightTheme)\n\n`;
+        result += themesTokensCustomCollection.map((([name, tokens]) => `export const ${name} = Object.assign(${JSON.stringify(Object.fromEntries(tokens.map(formatOptions)), undefined, 2)}, globalTokens);`)).join("\n\n");
         return result;
     }
 });
