@@ -1,9 +1,10 @@
+#!/usr/bin/env node
 import args from "args";
 
 import { buildAllPlatform } from "./transform.mjs";
 
 (() => {
-    args.option("theme", "carbon or fluent").option("in", "json folder contain tokens", "./tokens").option("out", "json folder contain tokens", "./build");
+    args.option("theme", "carbon or fluent").option("in", "json folder contain tokens", "tokens/").option("out", "json folder contain tokens", "build/");
     const flags = args.parse(process.argv, {
         name: "transform-tokens"
     });
