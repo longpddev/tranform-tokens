@@ -6,8 +6,6 @@ import camelCase from "lodash/camelCase.js";
 
 registerTransforms(StyleDictionary);
 
-const kebabTransform = StyleDictionary.transform["name/camel"];
-
 const transforms = [ "ts/descriptionToComment", "ts/size/px", "ts/opacity", "ts/size/lineheight", "ts/typography/fontWeight", "ts/resolveMath", "ts/size/css/letterspacing", "ts/typography/css/fontFamily", "ts/typography/css/shorthand", "ts/border/css/shorthand", "ts/shadow/css/shorthand", "ts/color/css/hexrgba", "ts/color/modifiers" ];
 
 function formatOptions(token) {
@@ -16,17 +14,17 @@ function formatOptions(token) {
 
 StyleDictionary.registerFilter({
     name: "isGlobalCollection",
-    matcher: function(tokens) {
-        const parentPath = tokens.parent;
-        return parentPath.toLowerCase().startsWith("global");
+    matcher: function(token) {
+        const [collection] = token.path;
+        return collection.toLowerCase().startsWith("global");
     }
 });
 
 StyleDictionary.registerFilter({
     name: "isAliasCollection",
     matcher: token => {
-        const parentPath = token.parent;
-        return parentPath && !parentPath.toLowerCase().startsWith("global");
+        const [collection] = token.path;
+        return !collection.toLowerCase().startsWith("global");
     }
 });
 
@@ -35,43 +33,43 @@ const variableNameMatcher = [ {
     to: "border"
 } ];
 
-StyleDictionary.registerTransform({
-    name: "fluent/name",
-    type: "name",
-    matcher: kebabTransform.matcher,
-    transformer: function(token, options) {
-        var _a;
-        let [collection] = ((_a = token.parent) !== null && _a !== void 0 ? _a : "").split("/");
-        const path = Array.from(token.path);
-        const lastPath = path[path.length - 1];
-        if (lastPath.toLowerCase() === "rest") path.pop();
-        variableNameMatcher.forEach((({exp, to}) => {
-            if (exp.test(collection)) {
-                collection = collection.replace(exp, to);
-            }
-        }));
-        const result = camelCase([ options.prefix ].concat([ collection ], path).join(" "));
-        return result;
-    }
-});
+function fluentTokensName(token, options) {
+    let [collection] = token.path;
+    const path = Array.from(token.path);
+    path.splice(1, 1);
+    const lastPath = path[path.length - 1];
+    if (lastPath.toLowerCase() === "rest") path.pop();
+    variableNameMatcher.forEach((({exp, to}) => {
+        if (exp.test(collection)) {
+            collection = collection.replace(exp, to);
+        }
+    }));
+    const result = camelCase([ options.prefix ].concat(path).join(" "));
+    return result;
+}
 
 const themesAvailable = new Set([ "light", "dark" ]);
 
 StyleDictionary.registerFormat({
     name: "fluent/ts/format",
-    formatter: function({dictionary}) {
+    formatter: function({dictionary, platform}) {
         const globalTokens = [];
         const themesTokens = new Map;
         themesAvailable.forEach((theme => themesTokens.set(theme, [])));
         dictionary.allTokens.forEach((item => {
-            var _a;
-            const [, collectionMode] = ((_a = item.parent) !== null && _a !== void 0 ? _a : "").toLowerCase().split("/");
+            const [, collectionMode] = item.path;
             if (!themesAvailable.has(collectionMode)) {
-                globalTokens.push(item);
+                globalTokens.push({
+                    ...item,
+                    name: fluentTokensName(item, platform)
+                });
                 return;
             }
             const tokens = themesTokens.get(collectionMode);
-            tokens.push(item);
+            tokens.push({
+                ...item,
+                name: fluentTokensName(item, platform)
+            });
         }));
         const themesTokensCustomCollection = Array.from(themesTokens.entries()).map((([name, tokens]) => [ `${name}Tokens`, tokens ]));
         let result = `import { teamsLightTheme } from '@fluentui/react-theme';\n\n`;
@@ -83,5 +81,5 @@ StyleDictionary.registerFormat({
 
 StyleDictionary.registerTransformGroup({
     name: "fluent/ui",
-    transforms: [ ...transforms, "fluent/name" ]
+    transforms: [ ...transforms, "name/camel" ]
 });

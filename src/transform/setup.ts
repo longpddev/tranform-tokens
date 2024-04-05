@@ -3,12 +3,7 @@ import StyleDictionary from "style-dictionary";
 import camelCase from 'lodash/camelCase.js'
 import {TransformedToken} from "style-dictionary/types";
 
-/**
- * @typedef {import("style-dictionary/types").TransformedToken} TransformedToken
- */
-
 registerTransforms(StyleDictionary);
-const kebabTransform = StyleDictionary.transform["name/camel"];
 
 const transforms = [
   'ts/descriptionToComment',
@@ -36,9 +31,9 @@ function formatOptions (token: TransformedToken) {
 
 StyleDictionary.registerFilter({
   name: 'isGlobalCollection', 
-  matcher: function (tokens) {
-    const parentPath = tokens.parent;
-    return parentPath.toLowerCase().startsWith('global')
+  matcher: function (token) {
+    const [collection] = token.path
+    return collection.toLowerCase().startsWith('global')
   }
 })
 
@@ -46,56 +41,52 @@ StyleDictionary.registerFilter({
 	name: "isAliasCollection",
 	matcher: token =>
 	{
-		const parentPath = token.parent;
-		return parentPath && !parentPath.toLowerCase().startsWith('global')
+		const [collection] = token.path
+		return !collection.toLowerCase().startsWith('global')
 	},
 })
 
 const variableNameMatcher = [{
   exp: /^(corner)/i,
   to: 'border'
-}]
+}];
 
-StyleDictionary.registerTransform({
-  name: 'fluent/name',
-  type: 'name',
-  matcher: kebabTransform.matcher,
-  transformer: function (token, options) {
-    let [collection] = (token.parent ?? "").split('/');
-    const path = Array.from(token.path)
-    const lastPath = path[path.length - 1];
-    if(lastPath.toLowerCase() === 'rest') path.pop();
-    variableNameMatcher.forEach(({exp, to}) => {
-      if(exp.test(collection)) {
-        collection = collection.replace(exp, to)
-      }
-    })
-    
-    const result = camelCase([options.prefix].concat([collection], path).join(' '));
-
-    return result;
-  }
-})
+function fluentTokensName (token: TransformedToken, options: {prefix?: string}) {
+  let [collection] = token.path;
+  const path = Array.from(token.path)
+  // remove collection name mode
+  path.splice(1, 1)
+  const lastPath = path[path.length - 1];
+  if(lastPath.toLowerCase() === 'rest') path.pop();
+  variableNameMatcher.forEach(({exp, to}) => {
+    if(exp.test(collection)) {
+      collection = collection.replace(exp, to)
+    }
+  })
+  
+  const result = camelCase([options.prefix].concat(path).join(' '));
+  return result;
+}
 
 const themesAvailable = new Set(['light', 'dark'])
 
 StyleDictionary.registerFormat({
   name: 'fluent/ts/format',
-  formatter: function ({dictionary}) {
+  formatter: function ({dictionary, platform}) {
     const globalTokens: Array<TransformedToken> = [];
     const themesTokens = /** @type {Map<string, Array<TransformedToken>>} */(new Map());
     themesAvailable.forEach(theme => themesTokens.set(theme, []));
 
     dictionary.allTokens.forEach(item => {
-      const [, collectionMode] = (item.parent ?? "").toLowerCase().split('/');
+      const [, collectionMode] = item.path;
       
       if(!themesAvailable.has(collectionMode)) {
-        globalTokens.push(item);
+        globalTokens.push({...item, name: fluentTokensName(item, platform)});
         return;
       }
 
       const tokens = themesTokens.get(collectionMode);
-      tokens.push(item)
+      tokens.push({...item, name: fluentTokensName(item, platform)})
     });
 
     const themesTokensCustomCollection = Array.from(themesTokens.entries()).map(([name, tokens]) => ([`${name}Tokens`, tokens]))
@@ -116,5 +107,5 @@ StyleDictionary.registerTransformGroup({
   name: 'fluent/ui',
   // add a default name transform, since this is almost always needed
   // it's easy to override by users, adding their own "transforms"
-  transforms: [...transforms, 'fluent/name'],
+  transforms: [...transforms, 'name/camel'],
 });

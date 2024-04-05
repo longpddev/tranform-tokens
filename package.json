@@ -6,10 +6,10 @@
     "access": "public"
   },
   "scripts": {
-    "build": "rimraf dist && rollup -c rollup.config.mjs",
+    "build": "rimraf dist && rollup -c rollup.config.mjs --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc --watch",
-    "transform": "node dist/src/cli.mjs --theme fluent --in tokens/ --out build/",
+    "transform": "node dist/src/cli.mjs --theme fluent --in newTokens/ --out build/",
     "change-extension": "nodemon change-extension.mjs"
   },
   "keywords": [],

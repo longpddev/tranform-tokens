@@ -9,14 +9,16 @@ const mapPlatform = {
     fluent: "fluent/ui"
 };
 
-path.posix;
-
 const Test = StyleDictionary;
 
 function buildAllPlatform(options) {
     const sourcePath = path.join(options.rootFolder, "/**/*.json").replace(/\\/g, "/");
     console.log("🚀 ~ buildAllPlatform ~ sourcePath:", sourcePath);
     const sd = new Test({
+        log: {
+            warnings: "error",
+            verbosity: "verbose"
+        },
         source: [ sourcePath ],
         platforms: {
             css: {

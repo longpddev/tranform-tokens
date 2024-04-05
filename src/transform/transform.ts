@@ -14,8 +14,6 @@ interface BuildOptions {
   buildPath: string
 }
 
-path.posix
-
 interface Test {
   new (options: Config): StyleDictionary.Core
 }
@@ -26,6 +24,10 @@ export function buildAllPlatform(options: BuildOptions) {
   const sourcePath = path.join(options.rootFolder, '/**/*.json').replace(/\\/g, '/')
   console.log("🚀 ~ buildAllPlatform ~ sourcePath:", sourcePath)
   const sd = new Test({
+    log: {
+      warnings: 'error',
+      verbosity: 'verbose'
+    },
     source: [sourcePath],
     platforms: {
       css: {
