@@ -1,0 +1,28 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+    "allowJs": true,
+		"alwaysStrict": true,
+		"baseUrl": "./node_modules",
+		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"lib": [ "ES2019", "dom" ],
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"noEmit": false,
+		"noEmitOnError": true,
+		"noImplicitAny": false,
+		"noImplicitReturns": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"removeComments": true,
+		"rootDir": "./src",
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strictNullChecks": true,
+		"target": "ES2019",
+	},
+	"include": [
+		"src/**/*.ts"
+	]
+}

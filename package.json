@@ -1,0 +1,43 @@
+{
+  "name": "transform-tokens",
+  "version": "1.0.0",
+  "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rimraf dist && rollup -c rollup.config.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc --watch",
+    "transform": "node dist/src/cli.mjs --theme fluent --in tokens/ --out build/",
+    "change-extension": "nodemon change-extension.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "transform-tokens": "dist/cli/index.js"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/args": "^5.0.3",
+    "@types/lodash": "^4.17.0",
+    "@types/node": "^20.12.4",
+    "nodemon": "^3.1.0",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.14.0",
+    "typescript": "^5.4.4"
+  },
+  "dependencies": {
+    "@tokens-studio/sd-transforms": "^0.15.2",
+    "args": "^5.0.3",
+    "esm": "^3.2.25",
+    "lodash": "^4.17.21",
+    "app-root-path": "^3.1.0",
+    "style-dictionary": "4.0.0-prerelease.23"
+  }
+}
