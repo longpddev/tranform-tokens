@@ -352,7 +352,7 @@
         "description": "#115EA3"
       },
       "80": {
-        "value": "#0f6cbd",
+        "value": "#bd0f39",
         "type": "color",
         "parent": "Global/Default",
         "description": "#0F6CBD"
@@ -404,6 +404,16 @@
         "type": "color",
         "parent": "Global/Default",
         "description": "#EBF3FC"
+      }
+    },
+    "Neutral": {
+      "Grey": {
+        "16": {
+          "value": "{Colors.Grey.16}",
+          "type": "color",
+          "parent": "Global/Default",
+          "description": ""
+        }
       }
     }
   },

@@ -1,8 +1,26 @@
-import { variableNameMatcher } from "./constant.mjs";
+import { variableNameMatcher, replaceNameByCase } from "./constant.mjs";
 
 import lodash from "lodash";
 
-const {camelCase, once} = lodash;
+import fluentTheme from "@fluentui/react-theme";
+
+const {webLightTheme} = fluentTheme;
+
+const {once} = lodash;
+
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function camelCase(str) {
+    let [first, ...last] = str.trim().replace(/-+/, " ").replace(/\s+/, " ").split(" ");
+    first = first.toLowerCase();
+    if (last.length > 0) {
+        last = last.map(capitalize);
+        return first + last.join("");
+    }
+    return first;
+}
 
 function formatOptions(token) {
     return [ token.name, token.value ];
@@ -10,17 +28,9 @@ function formatOptions(token) {
 
 once(((...args) => console.log(...args)));
 
-function getTokenMode(token) {
-    return token.original?.extensions?.["org.lukasoppermann.figmaDesignTokens"]?.mode;
-}
-
 function fluentTokensName(token, options) {
-    let [collection] = token.path;
     const path = Array.from(token.path);
-    const tokenMode = getTokenMode(token);
-    if (tokenMode && tokenMode.toLowerCase() === path[1].toLowerCase()) {
-        path.splice(1, 1);
-    }
+    let [collection] = extractCollectionToken(token);
     const lastPath = path[path.length - 1];
     if (lastPath.toLowerCase() === "rest") path.pop();
     variableNameMatcher.forEach((({exp, to}) => {
@@ -28,8 +38,37 @@ function fluentTokensName(token, options) {
             collection = collection.replace(exp, to);
         }
     }));
-    const result = camelCase([ options.prefix ].concat(path).join(" "));
+    let result = camelCase([ options.prefix ].concat([ collection ], path).join(" "));
+    for (const replaceCase of replaceNameByCase) {
+        const newName = replaceWithStartBy(result, replaceCase.startBy, replaceCase.changeBy);
+        if (newName !== result) {
+            result = newName;
+            break;
+        }
+    }
     return result;
 }
 
-export { fluentTokensName, formatOptions, getTokenMode };
+function extractCollectionToken(token) {
+    return (token.parent ?? "").toLowerCase().split("/");
+}
+
+function replaceWithStartBy(origin, startWith, replaceWith) {
+    if (origin.length < startWith.length) return origin;
+    if (!origin.startsWith(startWith)) return origin;
+    return replaceWith + origin.slice(startWith.length);
+}
+
+function includeVariableName(nameCheck, value) {
+    const isExist = nameCheck in webLightTheme;
+    let isInclude = isExist;
+    if (isExist && value !== undefined) {
+        isInclude = webLightTheme[nameCheck] !== value;
+    }
+    if (!isExist) {
+        console.log(`${nameCheck} not exist in theme`);
+    }
+    return isInclude;
+}
+
+export { extractCollectionToken, fluentTokensName, formatOptions, includeVariableName, replaceWithStartBy };

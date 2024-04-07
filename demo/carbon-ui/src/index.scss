@@ -1,0 +1,9 @@
+@use 'sass:map';
+@use "variables" as *;
+@use "./overwrite/default" with (
+  $tokens: $tokens
+);
+@use "./overwrite/index";
+@use '@carbon/react' with (
+  $theme: $tokens
+);

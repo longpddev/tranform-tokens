@@ -1,14 +1,14 @@
-import { registerTransforms } from "@tokens-studio/sd-transforms";
-
 import StyleDictionary from "style-dictionary";
 
 import "./registerFilter.mjs";
 
 import "./registerFormat.mjs";
 
-import { transforms } from "./constant.mjs";
+import { registerTransformsOnce } from "../../helper.mjs";
 
-registerTransforms(StyleDictionary);
+import { transforms } from "@tokens-studio/sd-transforms";
+
+registerTransformsOnce(StyleDictionary);
 
 StyleDictionary.registerTransformGroup({
     name: "fluent/ui",

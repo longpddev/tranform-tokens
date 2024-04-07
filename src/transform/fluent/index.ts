@@ -1,10 +1,10 @@
-import { registerTransforms } from "@tokens-studio/sd-transforms";
 import StyleDictionary from "style-dictionary";
 import "./registerFilter.js"
 import "./registerFormat.js"
-import {transforms} from "./constant.js";
+import {registerTransformsOnce} from "../../helper.js";
+import {transforms} from "@tokens-studio/sd-transforms";
 
-registerTransforms(StyleDictionary);
+registerTransformsOnce(StyleDictionary);
 
 StyleDictionary.registerTransformGroup({
   name: 'fluent/ui',

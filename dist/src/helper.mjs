@@ -1,3 +1,11 @@
+import { registerTransforms } from "@tokens-studio/sd-transforms";
+
+import lodash from "lodash";
+
+const {once} = lodash;
+
+const registerTransformsOnce = once(registerTransforms);
+
 function normalizeFileExtension(extensionName) {
     if (!extensionName) return "";
     extensionName = extensionName.trim().toLowerCase();
@@ -6,4 +14,4 @@ function normalizeFileExtension(extensionName) {
     return extensionName;
 }
 
-export { normalizeFileExtension };
+export { normalizeFileExtension, registerTransformsOnce };

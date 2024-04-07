@@ -1,9 +1,11 @@
 import StyleDictionary from "style-dictionary";
 
+import { extractCollectionToken } from "./helper.mjs";
+
 StyleDictionary.registerFilter({
     name: "isGlobalCollection",
     matcher: function(token) {
-        const [collection] = token.path;
+        const [collection] = extractCollectionToken(token);
         return collection.toLowerCase().startsWith("global");
     }
 });
@@ -11,7 +13,7 @@ StyleDictionary.registerFilter({
 StyleDictionary.registerFilter({
     name: "isAliasCollection",
     matcher: token => {
-        const [collection] = token.path;
+        const [collection] = extractCollectionToken(token);
         return !collection.toLowerCase().startsWith("global");
     }
 });

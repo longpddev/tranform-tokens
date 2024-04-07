@@ -10,11 +10,12 @@
     "build": "rimraf dist && rollup -c rollup.config.mjs --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc --watch",
-    "transform": "rimraf build && node dist/src/transform/cli.mjs --theme fluent --in newTokens/ --out build/",
+    "transform": "rimraf build && node dist/src/transform/cli.mjs --theme fluent --in tokens/ --out build/",
     "change-extension": "nodemon change-extension.mjs",
     "transform:watch": "nodemon --exec \"npm run transform\" --watch dist/",
     "test-node": "nodemon test-node.mjs --watch test-node.mjs",
-    "transform:fluent": "node dist/src/transform/cli.mjs --theme fluent --in demo/fluent-ui/tokens/ --out demo/fluent-ui/src/"
+    "transform:fluent": "node dist/src/transform/cli.mjs --theme fluent --in demo/fluent-ui/tokens/ --out demo/fluent-ui/src/",
+    "transform:carbon": "node dist/src/transform/cli.mjs --theme carbon --in demo/carbon-ui/tokens/ --out demo/carbon-ui/src/"
   },
   "keywords": [],
   "author": "",
@@ -37,11 +38,12 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
+    "@fluentui/react-theme": "^9.1.19",
     "@tokens-studio/sd-transforms": "^0.15.2",
+    "app-root-path": "^3.1.0",
     "args": "^5.0.3",
     "esm": "^3.2.25",
     "lodash": "^4.17.21",
-    "app-root-path": "^3.1.0",
     "style-dictionary": "4.0.0-prerelease.23"
   }
 }
