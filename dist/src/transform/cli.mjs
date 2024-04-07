@@ -3,8 +3,10 @@ import args from "args";
 
 import { buildAllPlatform } from "./transform.mjs";
 
+import { normalizeFileExtension } from "../helper.mjs";
+
 (() => {
-    args.option("theme", "carbon or fluent").option("in", "json folder contain tokens", "tokens/").option("out", "json folder contain tokens", "build/");
+    args.option("theme", "carbon or fluent").option("in", "json folder contain tokens", "tokens/").option("out", "json folder contain tokens", "build/").option("fileExtension", "js, ts, css, scss", "ts");
     const flags = args.parse(process.argv, {
         name: "transform-tokens"
     });
@@ -16,6 +18,7 @@ import { buildAllPlatform } from "./transform.mjs";
     buildAllPlatform({
         buildPath: flags.out,
         platform: flags.theme,
-        rootFolder: flags.in
+        rootFolder: flags.in,
+        fileExtension: normalizeFileExtension(flags.fileExtension)
     });
 })();

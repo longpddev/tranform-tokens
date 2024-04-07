@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 
 import args from 'args';
-import {buildAllPlatform} from './transform';
+import {buildAllPlatform} from './transform.js';
+import {normalizeFileExtension} from '../helper.js';
 
 
 (() => {
   args
   .option("theme", "carbon or fluent")
   .option('in', "json folder contain tokens", 'tokens/')
-  .option('out', "json folder contain tokens", 'build/');
+  .option('out', "json folder contain tokens", 'build/')
+  .option('fileExtension', "js, ts, css, scss", 'ts');
 
   const flags = args.parse(process.argv, { name: "transform-tokens" } as unknown as undefined);
 
@@ -22,6 +24,7 @@ import {buildAllPlatform} from './transform';
   buildAllPlatform({
     buildPath: flags.out as string,
     platform: flags.theme,
-    rootFolder: flags.in
+    rootFolder: flags.in,
+    fileExtension: normalizeFileExtension(flags.fileExtension)
   })
 })()

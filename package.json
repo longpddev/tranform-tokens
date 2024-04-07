@@ -2,6 +2,7 @@
   "name": "transform-tokens",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
@@ -9,8 +10,11 @@
     "build": "rimraf dist && rollup -c rollup.config.mjs --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc --watch",
-    "transform": "node dist/src/cli.mjs --theme fluent --in newTokens/ --out build/",
-    "change-extension": "nodemon change-extension.mjs"
+    "transform": "rimraf build && node dist/src/transform/cli.mjs --theme fluent --in newTokens/ --out build/",
+    "change-extension": "nodemon change-extension.mjs",
+    "transform:watch": "nodemon --exec \"npm run transform\" --watch dist/",
+    "test-node": "nodemon test-node.mjs --watch test-node.mjs",
+    "transform:fluent": "node dist/src/transform/cli.mjs --theme fluent --in demo/fluent-ui/tokens/ --out demo/fluent-ui/src/"
   },
   "keywords": [],
   "author": "",

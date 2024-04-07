@@ -7,8 +7,8 @@
 		"esModuleInterop": true,
 		"experimentalDecorators": true,
 		"lib": [ "ES2019", "dom" ],
-		"module": "ESNext",
-		"moduleResolution": "node",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"noEmit": false,
 		"noEmitOnError": true,
 		"noImplicitAny": false,
@@ -20,7 +20,7 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strictNullChecks": true,
-		"target": "ES2019",
+		"target": "ESNext",
 	},
 	"include": [
 		"src/**/*.ts"
